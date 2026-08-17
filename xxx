@@ -47,7 +47,80 @@ COOLDOWN = 10
 
 page = "menu"
 running = True
-    
+#---
+def bot_ai():
+    global cooldown2
+
+    # Distance between bot and player 1
+    dx = player1.centerx - player2.centerx
+    dy = player1.centery - player2.centery
+    distance = math.hypot(dx, dy)
+
+    # Move toward player 1
+    if distance > 180:
+        if dx > 0:
+            player2.x += PLAYERSPEED
+        elif dx < 0:
+            player2.x -= PLAYERSPEED
+
+        if dy > 0:
+            player2.y += PLAYERSPEED
+        elif dy < 0:
+            player2.y -= PLAYERSPEED
+
+    # If too close, move away
+    elif distance < 120:
+        if dx > 0:
+            player2.x -= PLAYERSPEED
+        elif dx < 0:
+            player2.x += PLAYERSPEED
+
+        if dy > 0:
+            player2.y -= PLAYERSPEED
+        elif dy < 0:
+            player2.y += PLAYERSPEED
+
+    # Keep bot inside the screen
+    player2.clamp_ip(screen.get_rect())
+
+    # Shoot at player 1
+    if cooldown2 >= COOLDOWN:
+        bulletpos2.append(
+            pygame.Rect(player1.centerx, player1.centery, 4, 4)
+        )
+
+        bullet2.append(
+            pygame.Rect(player2.centerx, player2.centery, 4, 4)
+        )
+
+        cooldown2 = 0
+
+    for i in range(len(bullet2) - 1, -1, -1):
+    dx = bulletpos2[i].centerx - bullet2[i].centerx
+    dy = bulletpos2[i].centery - bullet2[i].centery
+
+    dist = math.hypot(dx, dy)
+
+    if dist != 0:
+        bullet2[i].x += (dx / dist) * BULLETSPEED
+        bullet2[i].y += (dy / dist) * BULLETSPEED
+
+    if (
+        bullet2[i].x < -10
+        or bullet2[i].x > SCREEN_WIDTH + 10
+        or bullet2[i].y < -10
+        or bullet2[i].y > SCREEN_HEIGHT + 10
+    ):
+        bullet2.pop(i)
+        bulletpos2.pop(i)
+        continue
+
+    if player1.colliderect(bullet2[i]):
+        dmgtaken1 += DAMAGE
+        bullet2.pop(i)
+        bulletpos2.pop(i)
+#---
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
