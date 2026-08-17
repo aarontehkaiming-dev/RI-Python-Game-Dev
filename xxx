@@ -235,8 +235,7 @@ while running:
         cooldown2 = 0
         if pygame.key.get_pressed()[pygame.K_SPACE]:
             page = "game"
-    elif page == "tutorial":
-        pass  
+
     pygame.display.flip() 
     clock.tick(60)    
 
