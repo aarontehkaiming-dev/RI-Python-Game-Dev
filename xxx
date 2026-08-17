@@ -40,12 +40,10 @@ cooldown1 = 0
 cooldown2 = 0
 
 PLAYERSPEED = 5
-SPEED = 15
-DPS = 5
+BULLETSPEED = 15
 DAMAGE = 20
 HEALTH = 1000
 COOLDOWN = 10
-move_target = None
 
 page = "menu"
 running = True
@@ -87,42 +85,42 @@ while running:
         player2.clamp_ip(screen.get_rect())
 
         if pygame.key.get_pressed()[pygame.K_LSHIFT] and cooldown1 >= COOLDOWN:
-            bulletpos1.append([player2.x + 18, player2.y + 18])
+            bulletpos1.append(pygame.Rect(player2.x + 18,player2.y + 18,4,4))
             bullet1.append(pygame.Rect(player1.x + 18,player1.y + 18,4,4))
             cooldown1 = 0
         if pygame.key.get_pressed()[pygame.K_RSHIFT] and cooldown2 >= COOLDOWN:
-            bulletpos2.append([player1.x + 18, player1.y + 18])
+            bulletpos2.append(pygame.Rect(player1.x + 18,player1.y + 18,4,4))
             bullet2.append(pygame.Rect(player2.x + 18,player2.y + 18,4,4))
             cooldown2 = 0
 
-        for a in bullet1[:]:
-            dx = player2.centerx - a.centerx
-            dy = player2.centery - a.centery
+        for i in range(len(bullet1)):
+            dx = bulletpos1[i].centerx - bullet1[i].centerx
+            dy = bulletpos1[i].centery - bullet1[i].centery
             dist = math.hypot(dx, dy)
             if dist != 0:
-                a.x += (dx / dist) * SPEED
-                a.y += (dy / dist) * SPEED
-            if a.x < -10 or a.x > SCREEN_WIDTH + 10 or a.y < -10 or a.y > SCREEN_HEIGHT + 10:
-                bullet1.remove(a)
-                bulletpos1.remove([a.x, a.y])
-            if player2.colliderect(a):
+                bullet1[i].x += (dx / dist) * SPEED
+                bullet1[i].y += (dy / dist) * SPEED
+            if bullet1[i].x < -10 or bullet1[i].x > SCREEN_WIDTH + 10 or bullet1[i].y < -10 or bullet1[i].y > SCREEN_HEIGHT + 10:
+                bullet1.pop(i)
+                bulletpos1.pop(i)
+            if player2.colliderect(bullet1[i]):
                 dmgtaken2 += DAMAGE
-                bulletpos1.pop(bullet1.index(a))
-                bullet1.remove(a)
-        for a in bullet2[:]:
-            dx = player1.centerx - a.centerx
-            dy = player1.centery - a.centery
+                bulletpos1.pop(i)
+                bullet1.pop(i)
+        for i in range(len(bullet2)):
+            dx = bulletpos2[i].centerx - bullet2[i].centerx
+            dy = bulletpos2[i].centery - bullet2[i].centery
             dist = math.hypot(dx, dy)
             if dist != 0:
-                a.x += (dx / dist) * SPEED
-                a.y += (dy / dist) * SPEED
-            if a.x < -10 or a.x > SCREEN_WIDTH + 10 or a.y < -10 or a.y > SCREEN_HEIGHT + 10:
-                bullet2.remove(a)
-                bulletpos2.remove([a.x, a.y])
-            if player1.colliderect(a):
+                bullet2[i].x += (dx / dist) * BULLETSPEED
+                bullet2[i].y += (dy / dist) * BULLETSPEED
+            if bullet2[i].x < -10 or bullet2[i].x > SCREEN_WIDTH + 10 or bullet2[i].y < -10 or bullet2[i].y > SCREEN_HEIGHT + 10:
+                bullet2.pop(i)
+                bulletpos2.pop(i)
+            if player1.colliderect(bullet2[i]):
                 dmgtaken1 += DAMAGE
-                bulletpos2.pop(bullet2.index(a))
-                bullet2.remove(a)
+                bulletpos2.pop(i)
+                bullet2.pop(i)
 
         if dmgtaken1 >= HEALTH:
             page = "gameover"
