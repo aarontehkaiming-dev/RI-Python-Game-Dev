@@ -27,7 +27,7 @@ GREY   = (128, 128, 128)
 GREEN = (0, 128, 0)
 FONT = pygame.font.Font(None, 36)
 
-clock = pygame.time.get_ticks() 
+clock = pygame.time.Clock()
 player1 = pygame.Rect(100,100,40,40)
 player2 = pygame.Rect(100,100,40,40)
 bullet1 = []
@@ -238,7 +238,7 @@ while running:
     elif page == "tutorial":
         pass  
     pygame.display.flip() 
-    pygame.time.Clock().tick(60)    
+    clock.tick(60)    
 
 pygame.quit()
 sys.exit()
